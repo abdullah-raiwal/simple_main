@@ -22,3 +22,9 @@ estimators:
 
 model_dir: saved_model
 
+score_files:
+  params: reports/params.json
+  metrics: reports/metrics.json
+
+
+
