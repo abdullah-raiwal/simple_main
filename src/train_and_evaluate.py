@@ -13,11 +13,13 @@ import joblib
 import json
 import numpy as np
 
+
 def eval_metrics(actual, pred):
     rmse = np.sqrt(mean_squared_error(actual, pred))
     mae = mean_absolute_error(actual, pred)
     r2 = r2_score(actual, pred)
     return rmse, mae, r2
+
 
 def train_and_evaluate(config_path):
     config = read_params(config_path)
@@ -30,14 +32,14 @@ def train_and_evaluate(config_path):
     l1_ratio = config['estimators']['ElasticNet']['params']['l1_ratio']
     target_col = [config['base']['target_col']]
 
-    train = pd.read_csv(train_data_path, sep = ',', encoding='utf-8')
-    test  = pd.read_csv(test_data_path, sep = ',', encoding='utf-8')
+    train = pd.read_csv(train_data_path, sep=',', encoding='utf-8')
+    test = pd.read_csv(test_data_path, sep=',', encoding='utf-8')
 
     train_y = train[target_col]
-    test_y  = test[target_col]
+    test_y = test[target_col]
 
-    train_x = train.drop(target_col, axis = 1) 
-    test_x  = test.drop(target_col, axis = 1)
+    train_x = train.drop(target_col, axis=1)
+    test_x = test.drop(target_col, axis=1)
 
     lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=random_state)
     lr.fit(train_x, train_y)
@@ -45,7 +47,7 @@ def train_and_evaluate(config_path):
     predicted_qualities = lr.predict(test_x)
     (rmse, mae, r2) = eval_metrics(test_y, predicted_qualities)
 
-    print("Elasticnet Model (alpha = %f, l1_ratio = %f):" %(alpha, l1_ratio))
+    print("Elasticnet Model (alpha = %f, l1_ratio = %f):" % (alpha, l1_ratio))
 
     print("  RMSE: %s" % rmse)
     print("  MAE: %s" % mae)
@@ -56,24 +58,22 @@ def train_and_evaluate(config_path):
 
     with open(metric_file, "w") as f:
         metrics = {
-            'rmse' : rmse,
-            'mae'  : mae,
-            'r2'   : r2
+            'rmse': rmse,
+            'mae': mae,
+            'r2': r2
         }
         json.dump(metrics, f, indent=4)
 
     with open(params_file, "w") as f:
         params = {
-            'alpha' : alpha,
-            'l1_ratio'  : l1_ratio
+            'alpha': alpha,
+            'l1_ratio': l1_ratio
         }
         json.dump(params, f, indent=4)
 
-        
     os.makedirs(model_dir, exist_ok=True)
     model_path = os.path.join(model_dir, "model.joblib")
     joblib.dump(lr, model_path)
-
 
 
 if __name__ == "__main__":
