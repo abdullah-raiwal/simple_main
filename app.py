@@ -1,7 +1,6 @@
 from logging import exception
 from flask import Flask, render_template, jsonify, request
 import os
-from flask.signals import template_rendered
 import yaml
 import joblib
 import numpy as np
