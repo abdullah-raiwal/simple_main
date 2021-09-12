@@ -4,3 +4,4 @@ sklearn
 pytest
 tox
 gunicorn
+flask
