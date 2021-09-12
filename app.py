@@ -30,7 +30,6 @@ def predict(data):
 def api_response(request):
     try:
         data = np.array([list(request.json.values())])
-        print(data)
         response = predict(data)
         response = {"response" : response}
         return response
