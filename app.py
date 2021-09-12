@@ -31,6 +31,7 @@ def api_response(request):
     try:
         data = np.array([list(request.json.values())])
         response = predict(data)
+        print(response)
         response = {"response" : response}
         return response
     except Exception as e:
