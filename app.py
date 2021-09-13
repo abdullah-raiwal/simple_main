@@ -5,40 +5,14 @@ import yaml
 import joblib
 import numpy as np
 
-params_path = "params.yaml"
+from prediction_service import prediction
+
 webapp_root = "webapp"
 
 static_dir = os.path.join(webapp_root, "static")
 template_dir = os.path.join(webapp_root, "templates")
 
 app = Flask(__name__, static_folder=static_dir, template_folder=template_dir)
-
-
-def read_params(config_path):
-    with open(config_path) as yaml_file:
-        config = yaml.safe_load(yaml_file)
-    return config
-
-
-def predict(data):
-    config = read_params(params_path)
-    model_dir = config["webapp_model_dir"]
-    model = joblib.load(model_dir)
-    prediction = model.predict(data)
-    print(prediction)
-    return prediction[0]
-
-
-def api_response(request):
-    try:
-        data = np.array([list(request.json.values())])
-        response = predict(data)
-        print(response)
-        response = {"response": response}
-        return response
-    except Exception as e:
-        error = {"error": e}
-        return error
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -48,19 +22,15 @@ def index():
             if request.form:
                 data = dict(request.form)
                 print(data)
-                data = [data.get(key) for key in data.keys()]
-                data = [list(map(float, data))]
-
-                response = predict(data)
+                response = prediction.form_response(data)
                 return render_template("index.html", response=response)
 
             elif request.json:
-                response = api_response(request)
+                response = prediction.api_response(request.json)
                 return jsonify(response)
         except Exception as e:
-            print(e)
-            error = {"error": e}
-            return render_template("404.html", error=error)
+        
+            return render_template("404.html", error=e)
 
     else:
         return render_template("index.html")
