@@ -5,3 +5,4 @@ pytest
 tox
 gunicorn
 flask
+mlflow
