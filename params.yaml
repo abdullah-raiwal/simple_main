@@ -19,8 +19,10 @@ estimators:
     params:
       # alpha: 0.88
       # l1_ratio: 0.89
-      alpha: 0.9
-      l1_ratio: 0.4
+      # alpha: 0.9
+      # l1_ratio: 0.4
+      alpha: 0.5
+      l1_ratio: 0.5
 
 model_dir: saved_model
 
@@ -29,4 +31,12 @@ score_files:
   metrics: reports/metrics.json
 
 webapp_model_dir: prediction_service/model/model.joblib
+
+mlflow_config:
+  artifacts_dir: artifacts
+  experiment_name: ElasticNet Predictor
+  run_name: mlops
+  registered_model_name: Elastic_Net_wine_Model
+  remote_server_uri: http://localhost:5000
+  
 
